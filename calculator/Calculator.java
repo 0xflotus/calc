@@ -13,8 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
-public class Calculator extends JFrame
-		implements ActionListener, MyUnicodeConstants, MyMarkerForOperator, MyColors, PropertyChangeListener {
+public class Calculator extends JFrame implements ActionListener, MyUnicodeConstants, MyColors, PropertyChangeListener {
 	private static final int LABELBREITE = 353;
 	private static final float HISTORY_FONT_SIZE = 16f, DISPLAY_FONT_SIZE = 50f;
 	private static final String COMMA_DEFINITION = ".";
@@ -23,7 +22,11 @@ public class Calculator extends JFrame
 	private Taste btnMC, btnMR, btnC, btnCE;
 	private Double op1, op2, memory = 0.0;
 	private String operand1 = "", operator = "", operand2 = "";
-	private int marker;
+	private Marker marker;
+
+	private enum Marker {
+		PLUS, MINUS, TIMES, DIVIDE, NOTHING;
+	}
 
 	public static void main(String[] args) {
 		new Calculator();
@@ -111,7 +114,7 @@ public class Calculator extends JFrame
 		btnMR.setEnabled(false);
 		btnMC.setEnabled(false);
 		memory = 0.0;
-		marker = 0;
+		marker = Marker.NOTHING;
 	}
 
 	@Override
@@ -241,16 +244,16 @@ public class Calculator extends JFrame
 		this.op1 = Double.parseDouble(operand1);
 		switch (operationszeichen) {
 		case "+":
-			compute(PLUS, "+");
+			compute(Marker.PLUS, "+");
 			break;
 		case "-":
-			compute(MINUS, "-");
+			compute(Marker.MINUS, "-");
 			break;
 		case MALZEICHEN:
-			compute(TIMES, MALZEICHEN);
+			compute(Marker.TIMES, MALZEICHEN);
 			break;
 		case DIVISIONSZEICHEN:
-			compute(DIVIDE, DIVISIONSZEICHEN);
+			compute(Marker.DIVIDE, DIVISIONSZEICHEN);
 			break;
 		default:
 			System.out.println("Unbekannte mathematische Funktion");
@@ -260,7 +263,7 @@ public class Calculator extends JFrame
 		aktualisiereHistory();
 	}
 
-	private void compute(int rechenart, String zeichen) {
+	private void compute(Marker rechenart, String zeichen) {
 		this.marker = rechenart;
 		this.operator = zeichen;
 		showDisplay("0", true);
